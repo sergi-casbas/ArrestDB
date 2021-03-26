@@ -3,7 +3,13 @@
 define("MULTIPLEX_ROOT", "/multiplexing/");
 
 # $dsn and $client are moved to <dbid>/dns.php file for each database for security reasons.
-$dbid = strtolower(apache_request_headers()['Database']); 
+if ( isset(apache_request_headers()['Database']) )
+{
+	$dbid = strtolower(apache_request_headers()['Database']);
+}else{
+	$dbid = '';
+}
+
 
 # Only process multiplexing if a database header is sent making backward compatible.
 if ( $dbid != '' )

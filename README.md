@@ -23,5 +23,14 @@ Autentication functions:
 * deautenticate()
 * keepAlive(onSuccess, onError)
 
+## Server installation.
+### Apache.
+This repo contains .htacces file ready to use with apache.
+
+### Lighttpd.
+Add following code to your /etc/lighttpd.conf.d/phpdbapi.conf
+server.modules += ("mod_rewrite")
+url.rewrite-once = ("^/phpdbapi/([^?]*)(?:\?(.*))?" => "/phpdbapi/index.php/$1/$2/$3/$4/$5")
+
 ## PHPAPI
 The API is based on ArrestDB by alixaxel (https://github.com/alixaxel/ArrestDB) and only have added the modules inclusion.

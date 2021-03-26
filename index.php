@@ -73,7 +73,7 @@ ArrestDB::Serve('GET', '/(#any)/(#any)/(#any)', function ($table, $id, $data)
 	}
 
 	$query = sprintf('%s;', implode(' ', $query));
-	$result = ArrestDB::Query($query, $data);
+	$result = ArrestDB::Query($query, '%'.$data.'%');
 
 	if ($result === false)
 	{

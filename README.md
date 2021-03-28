@@ -7,18 +7,21 @@ With this library you don't neet do deal directly with the API to use it in your
 
 The library supports both multiplexing and autentication, wich makes your connections more secure and flexible over internet.
 
-Library API mapped available functions:
-* create(serverURL, tableName, itemJSON, onSuccess, onError)
-* read(serverURL, tableName, itemId, onSuccess, onError)
-* readAll(serverURL, tableName, onSuccess, onError)
-* update(serverURL, tableName, itemId, itemJSON, onSuccess, onError)
-* remove(serverURL, tableName, itemId, onSuccess, onError)
+Library can be used as standalone functions (dbapi.js) or as a class dbapiClass.js, class will be prefered mode due its compactness and capabilities (use more than one connection in the same page)
 
-Multiplexing functions:
+Class API mapped available functions:
+* constructor(serverULR)
+* create(tableName, itemJSON, onSuccess, onError)
+* read(tableName, itemId, onSuccess, onError)
+* readAll(tableName, onSuccess, onError)
+* update(tableName, itemId, itemJSON, onSuccess, onError)
+* remove(tableName, itemId, onSuccess, onError)
+
+Multiplexing functions (To-Do put inside class):
 * openDatabase(databaseName)
 * closeDatabase()
 
-Autentication functions:
+Autentication functions (To-Do put inside class):
 * autenticate(serverURL, apikey, onSuccess, onError)
 * deautenticate()
 * keepAlive(onSuccess, onError)

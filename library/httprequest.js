@@ -33,8 +33,12 @@ function onReadyStateChange(){
 	/* https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState */
 	if (this.readyState == 4) { //DONE
 		if (this.status != 200) {
-			/* If the connection is ready but not 200, return as error (this behaviour is unexpected). */
-			if (this.onError != null) {this.onError(this);}
+			/* If the connection is ready but not 200, copy http error codes and return as error . */
+			if (this.onError != null) {
+				this.HTTPStatus = this.status;
+				this.HTTPStatusText = this.statusText;
+				this.onError(this);
+			}
 		}else{
 			this.JSON = JSON.parse(this.response); // Convert response to JSON.
 			if ('error' in this.JSON){

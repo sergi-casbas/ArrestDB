@@ -1,11 +1,19 @@
 /* Include external required javascript files */
-//include('../library/cookies.js');
-//include('../library/httprequest.js');
-function include(scriptPath){
-    var script = document.createElement('script'); 
-    script.src = scriptPath; 
+include('./cookies.js');
+include('./httprequest.js');
+
+function include(scriptURI){
+    let script = document.createElement('script'); 
+    script.src = scriptPath() + scriptURI; 
     document.head.appendChild(script);
 }
+
+function scriptPath(){
+    let path= document.currentScript.src.split('?')[0];  // remove any ?query
+    let mydir= path.split('/').slice(0, -1).join('/')+'/';  // remove last filename part of path
+    return mydir;    
+}
+
 
 class DBAPI {
     /* Class constructor */

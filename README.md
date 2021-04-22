@@ -14,8 +14,10 @@ Class API mapped available functions:
 * create(tableName, itemJSON, onSuccess, onError)
 * read(tableName, itemId, onSuccess, onError)
 * readAll(tableName, onSuccess, onError)
+* search(tableName, fieldName, likeValue,  onSuccess, onError, extraParams)
 * update(tableName, itemId, itemJSON, onSuccess, onError)
 * remove(tableName, itemId, onSuccess, onError)
+* rawquery(url, method, onSuccess, onError)
 
 Multiplexing functions (To-Do put inside class):
 * openDatabase(databaseName)

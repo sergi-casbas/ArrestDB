@@ -14,8 +14,10 @@ Class API mapped available functions:
 * create(tableName, itemJSON, onSuccess, onError)
 * read(tableName, itemId, onSuccess, onError)
 * readAll(tableName, onSuccess, onError)
+* search(tableName, fieldName, likeValue,  onSuccess, onError, extraParams)
 * update(tableName, itemId, itemJSON, onSuccess, onError)
 * remove(tableName, itemId, onSuccess, onError)
+* rawquery(url, method, onSuccess, onError)
 
 Multiplexing functions (To-Do put inside class):
 * openDatabase(databaseName)
@@ -32,11 +34,15 @@ This repo contains .htacces file ready to use with apache.
 
 ### Lighttpd.
 Add following code to your /etc/lighttpd.conf.d/phpdbapi.conf if you have a dedicated site for the db:
+
   server.modules += ("mod_rewrite")
+  
   url.rewrite-once = ("^/([^?]*)(?:\?(.*))?" => "/index.php/$1/$2/$3/?%{qsa}")
 
 If you have the API on a folder use this syntax (replace 'phpdbapi' with your own):
+
   server.modules += ("mod_rewrite")
+  
   url.rewrite-once = ("^/phpdbapi/([^?]*)(?:\?(.*))?" => "/phpdbapi/index.php/$1/$2/$3/?%{qsa}")
 
 ## PHPAPI

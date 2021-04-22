@@ -1,6 +1,6 @@
 <?php
 # Databases and dsn files path, by default out of public path.
-define("MULTIPLEX_ROOT", "/multiplexing/");
+define("MULTIPLEX_ROOT", "/../multiplexing/");
 
 # $dsn and $client are moved to <dbid>/dns.php file for each database for security reasons.
 if ( isset(apache_request_headers()['Database']) )
@@ -17,7 +17,7 @@ if ( $dbid != '' )
 	# Only allow lowercase letters, numbers and dot or underscore.
 	if (!preg_match('/[^a-z0-9._]/', $dbid))
 	{
-		$multiplexer = $_SERVER['DOCUMENT_ROOT'].MULTIPLEX_ROOT.$dbid.'.php';
+		$multiplexer = dirname(__FILE__).MULTIPLEX_ROOT.$dbid.'.php';
 	}else{
 		exit(ArrestDB::Reply(ArrestDB::$HTTP[403]));
 	}

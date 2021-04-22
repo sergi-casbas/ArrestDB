@@ -41,7 +41,9 @@ class DBAPI {
     (R)ead   > GET    /table[/column/content]
     (U)pdate > PUT    /table/id
     (D)elete > DELETE /table/id
+    rawquery > Any query AS is.
     */
+
     create(tableName, itemJSON, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
         httpRequest(this.serverURL + "/" + tableName , 'POST', onSuccess, onError, itemJSON);
     }
@@ -55,9 +57,7 @@ class DBAPI {
     }
 
     search(tableName, fieldName, likeValue,  onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
-        if (extraParams!=""){
-            extraParams="?"+extraParams;
-         }
+        if (extraParams!=""){extraParams="?"+extraParams;}
         httpRequest(this.serverURL+"/"+tableName+"/"+fieldName+"/"+likeValue+extraParams, 'GET', onSuccess, onError);
     }
 
@@ -67,6 +67,10 @@ class DBAPI {
 
     remove(tableName, itemId, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
         httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'DELETE', onSuccess, onError);
+    }
+
+    rawquery(url, method="GET", onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
+        httpRequest(this.serverURL + "/" +  url, method, onSuccess, onError);
     }
 
 }

@@ -1,26 +1,10 @@
-/* Include external required javascript files */
-include('./cookies.js');
-include('./httprequest.js');
-
-function include(scriptURI){
-    let script = document.createElement('script'); 
-    script.src = scriptPath() + scriptURI; 
-    document.head.appendChild(script);
-}
-
-function scriptPath(){
-    let path= document.currentScript.src.split('?')[0];  // remove any ?query
-    let mydir= path.split('/').slice(0, -1).join('/')+'/';  // remove last filename part of path
-    return mydir;    
-}
-
-
 class DBAPI {
     /* Class constructor */
-    constructor (serverURL){
+    constructor (serverURL, database=""){
         this.serverURL = serverURL;
+        if (database){this.database = database;}
     }
-    
+
     /* Default response functions, intended only for installation and debugging purposes.
     Is recommended to use your own function on function call.
     Use null if you don't want any return of the call.
@@ -45,32 +29,88 @@ class DBAPI {
     */
 
     create(tableName, itemJSON, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        httpRequest(this.serverURL + "/" + tableName , 'POST', onSuccess, onError, itemJSON);
+        this._httpRequest(this.serverURL + "/" + tableName , 'POST', onSuccess, onError, itemJSON);
     }
 
     read(tableName, itemId, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'GET', onSuccess, onError);
+        this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'GET', onSuccess, onError);
     }
 
     readAll(tableName, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        httpRequest(this.serverURL+"/"+tableName, 'GET', onSuccess, onError);
+        this._httpRequest(this.serverURL+"/"+tableName, 'GET', onSuccess, onError);
     }
 
     search(tableName, fieldName, likeValue,  onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
         if (extraParams!=""){extraParams="?"+extraParams;}
-        httpRequest(this.serverURL+"/"+tableName+"/"+fieldName+"/"+likeValue+extraParams, 'GET', onSuccess, onError);
+        this._httpRequest(this.serverURL+"/"+tableName+"/"+fieldName+"/"+likeValue+extraParams, 'GET', onSuccess, onError);
     }
 
     update(tableName, itemId, itemJSON, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'PUT', onSuccess, onError, itemJSON);
+        this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'PUT', onSuccess, onError, itemJSON);
     }
 
     remove(tableName, itemId, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'DELETE', onSuccess, onError);
+        this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'DELETE', onSuccess, onError);
     }
 
     rawquery(url, method="GET", onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        httpRequest(this.serverURL + "/" +  url, method, onSuccess, onError);
+        this._httpRequest(this.serverURL + "/" +  url, method, onSuccess, onError);
+    }
+
+    _httpRequest(url, operation, onSuccess = null, onError = null, objectJSON = null, authorization = null){
+        /* Prepare all request values, fallback, etc.. */
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = this._onReadyStateChange;
+    
+        /* Set callback functions if they are set. */
+        if (onSuccess) {xhttp.onSuccess = onSuccess;}
+        if (onError) {xhttp.onError = onError;}
+    
+        /* Prepare asyncronous connection. */
+        xhttp.open(operation, url, true);
+    
+        /* send authorization */
+        if (authorization !== null){
+            xhttp.setRequestHeader("Authorization", "Bearer ".concat(authorization));
+        }
+    
+        /* Automate the use of database multiplexing. */
+        if (this.database){
+            xhttp.setRequestHeader("Database", this.database);
+        }
+    
+        /* Send the request with JSON payload if exists. */
+        if (objectJSON){
+            xhttp.setRequestHeader('Content-Type', 'application/json');
+            xhttp.send(JSON.stringify(objectJSON));
+        }else{
+            xhttp.send();
+        }
+    }
+    
+    _onReadyStateChange(){
+        /* https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState */
+        if (this.readyState == 4) { //DONE
+            if (this.status != 200) {
+                /* If the connection is ready but not 200, copy http error codes and return as error . */
+                if (this.onError != null) {
+                    this.HTTPStatus = this.status;
+                    this.HTTPStatusText = this.statusText;
+                    this.onError(this);
+                }
+            }else{
+                this.JSON = JSON.parse(this.response); // Convert response to JSON.
+                if ('error' in this.JSON){
+                    /*If the response contain error, put on variables and return as error.*/
+                    this.HTTPStatus = this.JSON['error']['code'];
+                    this.HTTPStatusText = this.JSON['error']['status'];
+                    if (this.onError != null) {this.onError(this);}
+                }else{
+                    this.HTTPStatus = 200
+                    if (this.onSuccess != null) {this.onSuccess(this);}
+                }
+            }
+        }
     }
 
 }

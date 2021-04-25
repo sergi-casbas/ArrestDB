@@ -44,12 +44,31 @@ else if (array_key_exists('HTTP_X_HTTP_METHOD_OVERRIDE', $_SERVER) === true)
 	$_SERVER['REQUEST_METHOD'] = strtoupper(trim($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']));
 }
 
-ArrestDB::Serve('GET', '/(#any)/(#any)/(#any)', function ($table, $id, $data)
+ArrestDB::Serve('GET', '/(#any)/(#any)/(#any)/(#any)',  function ($table, $id, $operator, $data){return select ($table, $id, $data, $operator);});
+ArrestDB::Serve('GET', '/(#any)/(#any)/(#any)', function ($table, $id, $data){return select ($table, $id, $data);});
+function select ($table, $id, $data, $operator = null)
 {
+	switch ($operator){
+		case  ">":
+		case  "<":
+		case ">=":
+		case "=>":
+		case "<=":
+		case "=<":
+		case "!=":
+		case "==":
+		case "LIKE":
+		case "NOT LIKE":
+			$evaluation = $operator;
+			break;
+		default:
+			$evaluation = (ctype_digit($data) === true) ? '=' : 'LIKE';
+	}
+
 	$query = array
 	(
 		sprintf('SELECT * FROM "%s"', $table),
-		sprintf('WHERE "%s" %s ?', $id, (ctype_digit($data) === true) ? '=' : 'LIKE'),
+		sprintf('WHERE "%s" %s ?', $id, $evaluation),
 	);
 
 	if ( !(ctype_digit($data) === true))
@@ -91,7 +110,7 @@ ArrestDB::Serve('GET', '/(#any)/(#any)/(#any)', function ($table, $id, $data)
 	}
 
 	return ArrestDB::Reply($result);
-});
+}
 
 ArrestDB::Serve('GET', '/(#any)/(#num)?', function ($table, $id = null)
 {

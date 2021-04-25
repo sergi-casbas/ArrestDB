@@ -36,13 +36,12 @@ class DBAPI {
         this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'GET', onSuccess, onError);
     }
 
-    readAll(tableName, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        this._httpRequest(this.serverURL+"/"+tableName, 'GET', onSuccess, onError);
+    readAll(tableName, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
+        this.rawquery(tableName, 'GET', onSuccess, onError, extraParams);
     }
 
     search(tableName, fieldName, likeValue,  onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
-        if (extraParams!=""){extraParams="?"+extraParams;}
-        this._httpRequest(this.serverURL+"/"+tableName+"/"+fieldName+"/"+likeValue+extraParams, 'GET', onSuccess, onError);
+        this.rawquery(tableName+"/"+fieldName+"/"+likeValue, 'GET', onSuccess, onError, extraParams);
     }
 
     update(tableName, itemId, itemJSON, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
@@ -53,8 +52,9 @@ class DBAPI {
         this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'DELETE', onSuccess, onError);
     }
 
-    rawquery(url, method="GET", onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        this._httpRequest(this.serverURL + "/" +  url, method, onSuccess, onError);
+    rawquery(url, method="GET", onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
+		if (extraParams!=""){url = url + "?" + extraParams;}
+        this._httpRequest(this.serverURL + "/" +  url , method, onSuccess, onError);
     }
 
     _httpRequest(url, operation, onSuccess = null, onError = null, objectJSON = null, authorization = null){

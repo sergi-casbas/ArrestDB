@@ -48,7 +48,7 @@ class DBAPI {
         this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'PUT', onSuccess, onError, itemJSON);
     }
 
-    remove(tableName, itemId, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
+    delete(tableName, itemId, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
         this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'DELETE', onSuccess, onError);
     }
 

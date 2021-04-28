@@ -57,7 +57,7 @@ class DBAPI {
         this._httpRequest(this.serverURL + "/" +  url , method, onSuccess, onError);
     }
 
-    _httpRequest(url, operation, onSuccess = null, onError = null, objectJSON = null, authorization = null){
+    _httpRequest(url, operation, onSuccess = null, onError = null, postJSON = null, authorization = null){
         /* Prepare all request values, fallback, etc.. */
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = this._onReadyStateChange;
@@ -80,9 +80,9 @@ class DBAPI {
         }
     
         /* Send the request with JSON payload if exists. */
-        if (objectJSON){
+        if (postJSON){
             xhttp.setRequestHeader('Content-Type', 'application/json');
-            xhttp.send(JSON.stringify(objectJSON));
+            xhttp.send(JSON.stringify(postJSON));
         }else{
             xhttp.send();
         }

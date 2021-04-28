@@ -317,6 +317,31 @@ ArrestDB::Serve('PUT', '/(#any)/(#num)', function ($table, $id)
 	return ArrestDB::Reply($result);
 });
 
+ArrestDB::Serve('SEARCH', '/', function ()
+{	# Find SQL in different places.
+	if ( !empty($_SEARCH) ){
+		$query = $_SEARCH;
+	}elseif ( !empty($_POST) ) {
+		$query = $_POST;
+	}elseif ( !empty($_GET['sql']) ) {
+		$query = $_GET['sql'];
+	}else{
+		$result = ArrestDB::$HTTP[400];
+		return ArrestDB::Reply($result);
+	}
+
+	# TO-DO Filter $query OPERATIONS.
+	$result = ArrestDB::Query($query);
+
+	if ($result === false){
+		$result = ArrestDB::$HTTP[404];
+	}elseif (empty($result) === true){
+		$result = ArrestDB::$HTTP[204];
+	}
+
+	return ArrestDB::Reply($result);
+});
+
 exit(ArrestDB::Reply(ArrestDB::$HTTP[400]));
 
 class ArrestDB

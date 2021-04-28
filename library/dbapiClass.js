@@ -25,6 +25,8 @@ class DBAPI {
     (R)ead   > GET    /table[/column/content]
     (U)pdate > PUT    /table/id
     (D)elete > DELETE /table/id
+
+	search > Execute a SQL search into database
     rawquery > Any query AS is.
     */
 
@@ -40,16 +42,16 @@ class DBAPI {
         this.rawquery(tableName, 'GET', onSuccess, onError, extraParams);
     }
 
-    search(tableName, fieldName, likeValue,  onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
-        this.rawquery(tableName+"/"+fieldName+"/"+likeValue, 'GET', onSuccess, onError, extraParams);
-    }
-
     update(tableName, itemId, itemJSON, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
         this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'PUT', onSuccess, onError, itemJSON);
     }
 
     delete(tableName, itemId, onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
         this._httpRequest(this.serverURL + "/" + tableName + "/" + itemId, 'DELETE', onSuccess, onError);
+    }
+
+    search(SQLQuery,  onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
+        this.rawquery("?sql="+encodeURI(SQLQuery), 'SEARCH', onSuccess, onError);
     }
 
     rawquery(url, method="GET", onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){

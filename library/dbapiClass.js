@@ -51,7 +51,7 @@ class DBAPI {
     }
 
     search(SQLQuery,  onSuccess=this._defaultOnSuccess, onError=this._defaultOnError){
-        this.rawquery("?sql="+encodeURI(SQLQuery), 'SEARCH', onSuccess, onError);
+        this.rawquery("?sql="+encodeURIComponent(SQLQuery), 'SEARCH', onSuccess, onError);
     }
 
     rawquery(url, method="GET", onSuccess=this._defaultOnSuccess, onError=this._defaultOnError, extraParams=""){
